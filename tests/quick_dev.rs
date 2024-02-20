@@ -3,7 +3,7 @@ use serde_json::json;
 
 #[tokio::test]
 async fn quick_dev() -> Result<()> {
-    let http_client = httpc_test::new_client("http://localhost:8080")?;
+    let http_client = httpc_test::new_client("http://localhost:5050")?;
 
     /*
         http_client.do_get("/hello?name=pawel").await?.print().await?;
@@ -18,7 +18,20 @@ async fn quick_dev() -> Result<()> {
             "pwd": "pass"
         })
     );
-    req_login.await?.print().await?;
+    // req_login.await?.print().await?;
+
+    let req_create_ticket = http_client.do_post(
+        "/api/tickets",
+        json!({
+            "title": "Ticket Test 1"
+        })
+    );
+
+    req_create_ticket.await?.print().await?;
+
+    // http_client.do_delete("/api/tickets/1").await?.print().await?;
+
+    http_client.do_get("/api/tickets").await?.print().await?;
 
     Ok(())
 }

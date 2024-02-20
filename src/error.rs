@@ -1,12 +1,11 @@
 use axum::{http::StatusCode, response::{IntoResponse, Response}};
 
-
-
 pub type Result<T> = core::result::Result<T, Error>;
 
 #[derive(Debug)]
 pub enum Error {
     LoginFail,
+    TicketDeleteIdNotFound { id: u64 }
 }
 
 impl IntoResponse for Error {
