@@ -18,7 +18,7 @@ async fn quick_dev() -> Result<()> {
             "pwd": "pass"
         })
     );
-    // req_login.await?.print().await?;
+    req_login.await?.print().await?;
 
     let req_create_ticket = http_client.do_post(
         "/api/tickets",

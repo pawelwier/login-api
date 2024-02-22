@@ -1,5 +1,6 @@
 use crate::hello::{routes_hello, routes_static};
 use crate::model::ModelController;
+use crate::web::auth_middleware::mw_require_auth;
 use axum::{middleware, response::Response, Router};
 use tokio::net::TcpListener;
 use tower_cookies::CookieManagerLayer;
@@ -14,11 +15,14 @@ mod web;
 #[tokio::main]
 async fn main() -> Result<()> {
     let model_controller = ModelController::new().await?;
+
+    let routes_apis = web::routes_tickets::routes(model_controller)
+        .route_layer(middleware::from_fn(mw_require_auth));
     
     let routes_all = Router::new()
         .merge(routes_hello())
         .merge(web::routes_login::routes())
-        .nest("/api", web::routes_tickets::routes(model_controller))
+        .nest("/api", routes_apis)
         .layer(middleware::map_response(main_response_mapper))
         .layer(CookieManagerLayer::new())
         .fallback_service(routes_static());
